@@ -14,6 +14,10 @@ import uabc.farkle.ui.theme.FarkleTheme
 class ChangeScoreActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val intent = intent
+        val maxScore = intent.getIntExtra("maxScore", 0)
+
         enableEdgeToEdge()
         setContent {
             FarkleTheme {
@@ -21,7 +25,8 @@ class ChangeScoreActivity : ComponentActivity() {
                     ChangeScoreView(
                         modifier = Modifier
                             .padding(innerPadding)
-                            .fillMaxSize()
+                            .fillMaxSize(),
+                        maxScore = maxScore
                     )
                 }
             }

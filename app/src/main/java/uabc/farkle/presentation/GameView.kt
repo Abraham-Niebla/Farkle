@@ -58,6 +58,14 @@ fun GameView(modifier: Modifier, maxScore: Int){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Text(
+            text = "Max Score: ${maxScore}",
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.titleSmall
+        )
+
+        Spacer(modifier = Modifier.height(50.dp))
+
         Card {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -65,14 +73,6 @@ fun GameView(modifier: Modifier, maxScore: Int){
                     .fillMaxWidth()
                     .padding(2.dp)
             ) {
-                Text(
-                    text = "Max Socre: ${maxScore}",
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.displayLarge
-                )
-
-                Spacer(modifier = Modifier.height(50.dp))
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
@@ -119,14 +119,14 @@ fun GameView(modifier: Modifier, maxScore: Int){
         Spacer(modifier = Modifier.height(24.dp))
         Button(onClick = {
             scope.launch {
-                repeat(10) {
+                repeat(6) {
                     result1 = (1..6).random()
                     result2 = (1..6).random()
                     result3 = (1..6).random()
                     result4 = (1..6).random()
                     result5 = (1..6).random()
                     result6 = (1..6).random()
-                    delay(150) // Pausa de 100ms entre cambios
+                    delay(100) // Pausa de 100ms entre cambios
                 }
             }
         }) {
