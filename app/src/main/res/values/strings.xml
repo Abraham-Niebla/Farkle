@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Farkle</string>
+
+    <string name="roll">Girar</string>
+
+    <string name="play">Jugar</string>
+    <string name="scores">Puntuaciones</string>
+    <string name="max_score">Puntaje objetivo</string>
+    <string name="rules">Reglas</string>
+</resources>
