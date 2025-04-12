@@ -9,4 +9,7 @@
     <string name="rules">Reglas</string>
 
     <string name="set">Establecer</string>
+    <string name="no_conection">Sin conexión</string>
+    <string name="need_conection">Para ver la página es necesario que se conecte a internet</string>
+    <string name="accept">Aceptar</string>
 </resources>

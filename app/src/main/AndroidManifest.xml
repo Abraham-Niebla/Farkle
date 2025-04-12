@@ -4,6 +4,8 @@
 
     <!--  Habilita el acceso a internet  -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!--  Habilita el acceso al estado de la conexión a internet  -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"

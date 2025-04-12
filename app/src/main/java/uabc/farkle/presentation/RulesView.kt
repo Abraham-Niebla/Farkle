@@ -18,6 +18,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,6 +36,12 @@ import uabc.farkle.R
 @Composable
 fun RulesView(modifier: Modifier) {
     val context = LocalContext.current
+    var isConnected by remember { mutableStateOf(true) }
+
+    // Checar al abrir
+    LaunchedEffect(Unit) {
+        isConnected = networkAvailable(context)
+    }
 
     Scaffold(
         topBar = {
@@ -60,32 +71,25 @@ fun RulesView(modifier: Modifier) {
             )
         }
     ) { paddingValues ->
-//        Column(
-//            modifier = modifier
-//                .fillMaxSize()
-//                .padding(paddingValues)
-//                .padding(5.dp),
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.Center
-//        ) {
-//            Text(
-//                text = stringResource(R.string.rules),
-//                color = MaterialTheme.colorScheme.onSurface,
-//                style = MaterialTheme.typography.titleSmall
-//            )
-
         val layoutDirection = LocalLayoutDirection.current
 
-        WebViewWithLoadingIndicator(
-            url = "https://en.wikipedia.org/wiki/Farkle",
-            modifier = modifier
-                .fillMaxSize()
-                .padding(
-                    start = paddingValues.calculateStartPadding(layoutDirection),
-                    end = paddingValues.calculateEndPadding(layoutDirection),
-                    bottom = paddingValues.calculateBottomPadding()
-                )
-        )
-//        }
+        if (isConnected){
+            WebViewWithLoadingIndicator(
+                url = "https://en.wikipedia.org/wiki/Farkle",
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(
+                        start = paddingValues.calculateStartPadding(layoutDirection),
+                        end = paddingValues.calculateEndPadding(layoutDirection),
+                        bottom = paddingValues.calculateBottomPadding()
+                    )
+            )
+        }
+        else{
+            NoInternetDialog {
+                val activity = context as? Activity
+                activity?.finish()
+            }
+        }
     }
 }
