@@ -10,11 +10,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,54 +37,84 @@ import androidx.compose.ui.unit.dp
 import uabc.farkle.R
 import uabc.farkle.intents.ChangeScoreActivity
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChangeScoreView(modifier: Modifier, maxScore: Int) {
     val context = LocalContext.current
     var puntaje by remember { mutableStateOf("${maxScore}") }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        TextField(
-            value = puntaje,
-            onValueChange = { newValue ->
-                if (newValue.all { it.isDigit() }) {
-                    puntaje = newValue
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                ),
+                title = {
+                    Text(
+                        text = stringResource(R.string.max_score),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        val activity = context as? Activity
+                        activity?.finish()
+                    }) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Regresar"
+                        )
+                    }
                 }
-            },
-            label = { Text(stringResource(R.string.max_score)) },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number
             )
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.tertiary,
-                contentColor = MaterialTheme.colorScheme.onTertiary
-            ),
-            onClick = {
-                var puntajeInt = puntaje.toIntOrNull() ?: 0
-                puntajeInt = if (puntajeInt <= 0) 10000 else puntajeInt
-                val activity = context as? Activity
-                val intent = Intent().apply {
-                    putExtra("puntaje", puntajeInt)
-                }
-                activity?.setResult(Activity.RESULT_OK, intent)
-                activity?.finish()
-            }) {
-            Text(
-                text = stringResource(R.string.set),
-                style = MaterialTheme.typography.titleLarge
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            TextField(
+                value = puntaje,
+                onValueChange = { newValue ->
+                    if (newValue.all { it.isDigit() }) {
+                        puntaje = newValue
+                    }
+                },
+                label = { Text(stringResource(R.string.max_score)) },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Number
+                )
             )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiary,
+                    contentColor = MaterialTheme.colorScheme.onTertiary
+                ),
+                onClick = {
+                    var puntajeInt = puntaje.toIntOrNull() ?: 0
+                    puntajeInt = if (puntajeInt <= 0) 10000 else puntajeInt
+                    val activity = context as? Activity
+                    val intent = Intent().apply {
+                        putExtra("puntaje", puntajeInt)
+                    }
+                    activity?.setResult(Activity.RESULT_OK, intent)
+                    activity?.finish()
+                }) {
+                Text(
+                    text = stringResource(R.string.set),
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
         }
     }
 }
