@@ -17,6 +17,8 @@ class GameActivity : ComponentActivity() {
 
         val intent = intent
         val maxScore = intent.getIntExtra("maxScore", 0)
+        val player1 = intent.getStringExtra("player1").takeIf { !it.isNullOrBlank() } ?: "Jugador 1"
+        val player2 = intent.getStringExtra("player2").takeIf { !it.isNullOrBlank() } ?: "Jugador 2"
 
         enableEdgeToEdge()
         setContent {
@@ -24,7 +26,9 @@ class GameActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     GameView(
                         modifier = Modifier.padding(innerPadding).fillMaxSize(),
-                        maxScore = maxScore
+                        maxScore = maxScore,
+                        player1 = player1,
+                        player2 = player2
                     )
                 }
             }

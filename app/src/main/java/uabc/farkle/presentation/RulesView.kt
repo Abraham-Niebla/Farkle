@@ -71,18 +71,12 @@ fun RulesView(modifier: Modifier) {
             )
         }
     ) { paddingValues ->
-        val layoutDirection = LocalLayoutDirection.current
-
         if (isConnected){
             WebViewWithLoadingIndicator(
-                url = "https://en.wikipedia.org/wiki/Farkle",
-                modifier = modifier
+                url = RULES_URL,
+                modifier = Modifier
                     .fillMaxSize()
-                    .padding(
-                        start = paddingValues.calculateStartPadding(layoutDirection),
-                        end = paddingValues.calculateEndPadding(layoutDirection),
-                        bottom = paddingValues.calculateBottomPadding()
-                    )
+                    .padding(paddingValues)
             )
         }
         else{

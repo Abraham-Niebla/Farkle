@@ -12,4 +12,14 @@
     <string name="no_conection">Sin conexión</string>
     <string name="need_conection">Para ver la página es necesario que se conecte a internet</string>
     <string name="accept">Aceptar</string>
+
+    <string name="warning">Advertencia</string>
+    <string name="clear_file_warning">¿Está seguro de eliminar todas las puntuaciones? (No se podrán recuperar)</string>
+    <string name="delete">Eliminar</string>
+    <string name="cancel">Cancelar</string>
+
+    <string name="play_control">Control de Videojuegos</string>
+    <string name="enter_names">Ingrese los nombres de los jugadores</string>
+    <string name="player_1">Jugador 1</string>
+    <string name="player_2">Jugador 2</string>
 </resources>

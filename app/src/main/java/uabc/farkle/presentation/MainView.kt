@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import uabc.farkle.intents.*
 import uabc.farkle.R
+import uabc.farkle.utils.PlayersNamesDialog
 
 @Composable
 fun MainView(modifier: Modifier, context: Context) {
@@ -49,6 +50,10 @@ fun MainView(modifier: Modifier, context: Context) {
     )
     val buttonSpacer = Modifier.height(20.dp)
 
+    var showDialog by remember { mutableStateOf(false) }
+    var player1 by remember { mutableStateOf("") }
+    var player2 by remember { mutableStateOf("") }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -69,9 +74,7 @@ fun MainView(modifier: Modifier, context: Context) {
                 .fillMaxWidth(),
             colors = buttonColors,
             onClick = {
-                val intent = Intent(context, GameActivity::class.java)
-                intent.putExtra("maxScore", puntaje)
-                context.startActivity(intent)
+                showDialog = true
             }) {
             Text(
                 text = stringResource(R.string.play),
@@ -129,5 +132,23 @@ fun MainView(modifier: Modifier, context: Context) {
                 style = buttonStyle
             )
         }
+    }
+    if (showDialog) {
+        PlayersNamesDialog(
+            onConfirm = { j1, j2 ->
+                player1 = j1
+                player2 = j2
+                showDialog = false
+
+                val intent = Intent(context, GameActivity::class.java)
+                intent.putExtra("maxScore", puntaje)
+                intent.putExtra("player1", player1)
+                intent.putExtra("player2", player2)
+                context.startActivity(intent)
+            },
+            onDismiss = {
+                showDialog = false
+            }
+        )
     }
 }
