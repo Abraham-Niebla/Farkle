@@ -2,6 +2,7 @@ package uabc.farkle.presentation
 
 import android.app.Activity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,7 +51,12 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameView(modifier: Modifier, maxScore: Int = DEFAULT_MAX_SCORE, player1: String, player2: String) {
+fun GameView(
+    modifier: Modifier,
+    maxScore: Int = DEFAULT_MAX_SCORE,
+    player1: String,
+    player2: String
+) {
     var dice1 by remember { mutableStateOf(1) }
     var dice2 by remember { mutableStateOf(2) }
     var dice3 by remember { mutableStateOf(3) }
@@ -62,11 +69,11 @@ fun GameView(modifier: Modifier, maxScore: Int = DEFAULT_MAX_SCORE, player1: Str
     val dateFormatter = SimpleDateFormat("dd-MMMM-yyyy", Locale.getDefault())
     val timeFormatter = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
-    var player by remember { mutableStateOf(0)}
+    var player by remember { mutableStateOf(0) }
 
-    var names = remember { mutableStateListOf(player1, player2)}
-    var puntos = remember { mutableStateListOf(0, 0)}
-    var tiros = remember { mutableStateListOf(0, 0)}
+    var names = remember { mutableStateListOf(player1, player2) }
+    var puntos = remember { mutableStateListOf(0, 0) }
+    var tiros = remember { mutableStateListOf(0, 0) }
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -80,7 +87,11 @@ fun GameView(modifier: Modifier, maxScore: Int = DEFAULT_MAX_SCORE, player1: Str
         else -> R.drawable.dice_6
     }
 
-    fun changePlayer(player: Int) = when(player){
+    val diceLocked = remember { mutableStateListOf(false, false, false, false, false, false) }
+    val diceFrozen = remember { mutableStateListOf(false, false, false, false, false, false) }
+    var hasRolledOnce by remember { mutableStateOf(false) }
+
+    fun changePlayer(player: Int) = when (player) {
         0 -> 1
         1 -> 0
         else -> 0
@@ -141,18 +152,25 @@ fun GameView(modifier: Modifier, maxScore: Int = DEFAULT_MAX_SCORE, player1: Str
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        listOf(dice1, dice2, dice3).forEach { dice ->
+                        listOf(dice1, dice2, dice3).forEachIndexed { index, dice ->
                             Box(
                                 modifier = Modifier
                                     .weight(1f)
                                     .aspectRatio(1f)
-                                    .padding(1.dp),
+                                    .padding(1.dp)
+                                    .clickable(enabled = hasRolledOnce && !diceFrozen[index]) {
+                                        diceLocked[index] = !diceLocked[index]
+                                    },
                                 contentAlignment = Alignment.Center
                             ) {
                                 Image(
                                     painter = painterResource(getDiceImage(dice)),
                                     contentDescription = dice.toString(),
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .graphicsLayer(
+                                            alpha = if (diceLocked[index]) 0.5f else 1f
+                                        )
                                 )
                             }
                         }
@@ -162,18 +180,25 @@ fun GameView(modifier: Modifier, maxScore: Int = DEFAULT_MAX_SCORE, player1: Str
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        listOf(dice4, dice5, dice6).forEach { dice ->
+                        listOf(dice4, dice5, dice6).forEachIndexed { index, dice ->
                             Box(
                                 modifier = Modifier
                                     .weight(1f)
                                     .aspectRatio(1f)
-                                    .padding(1.dp),
+                                    .padding(1.dp)
+                                    .clickable(enabled = hasRolledOnce && !diceFrozen[index + 3]) {
+                                        diceLocked[index + 3] = !diceLocked[index + 3]
+                                    },
                                 contentAlignment = Alignment.Center
                             ) {
                                 Image(
                                     painter = painterResource(getDiceImage(dice)),
                                     contentDescription = dice.toString(),
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .graphicsLayer(
+                                            alpha = if (diceLocked[index + 3]) 0.5f else 1f
+                                        )
                                 )
                             }
                         }
@@ -186,18 +211,36 @@ fun GameView(modifier: Modifier, maxScore: Int = DEFAULT_MAX_SCORE, player1: Str
             Button(
                 onClick = {
                     rollEnabled = false
+                    // Congelar el estado de los dados bloqueados antes de la tirada
+                    for (i in 0 until diceLocked.size) {
+                        diceFrozen[i] = diceLocked[i]
+                    }
                     scope.launch {
                         repeat(6) {
-                            dice1 = (1..6).random()
-                            dice2 = (1..6).random()
-                            dice3 = (1..6).random()
-                            dice4 = (1..6).random()
-                            dice5 = (1..6).random()
-                            dice6 = (1..6).random()
+
+                            if (!diceFrozen[0]) dice1 = (1..6).random()
+                            if (!diceFrozen[1]) dice2 = (1..6).random()
+                            if (!diceFrozen[2]) dice3 = (1..6).random()
+                            if (!diceFrozen[3]) dice4 = (1..6).random()
+                            if (!diceFrozen[4]) dice5 = (1..6).random()
+                            if (!diceFrozen[5]) dice6 = (1..6).random()
                             delay(10)
                         }
-                        puntos[player] += dice1 + dice2 + dice3 + dice4 + dice5 + dice6
-                        tiros[player] ++
+                        // Sumar solo los valores de los dados que NO estaban bloqueados al tirar
+                        var currentScore = 0
+                        if (!diceFrozen[0]) currentScore += dice1
+                        if (!diceFrozen[1]) currentScore += dice2
+                        if (!diceFrozen[2]) currentScore += dice3
+                        if (!diceFrozen[3]) currentScore += dice4
+                        if (!diceFrozen[4]) currentScore += dice5
+                        if (!diceFrozen[5]) currentScore += dice6
+
+                        puntos[player] += currentScore
+                        tiros[player]++
+
+                        if (!hasRolledOnce) {
+                            hasRolledOnce = true
+                        }
 
                         saveFile(
                             context = context,
@@ -206,13 +249,13 @@ fun GameView(modifier: Modifier, maxScore: Int = DEFAULT_MAX_SCORE, player1: Str
                                 puntajeObjetivo = maxScore,
                                 puntajeLogrado = puntos[player],
                                 totalTiros = tiros[player],
-                                victoria = puntos[player] %2 == 0,
+                                victoria = puntos[player] % 2 == 0,
                                 fechaJuego = dateFormatter.format(Date()),
                                 horaJuego = timeFormatter.format(Date())
                             )
                         )
                         rollEnabled = true
-                        player = changePlayer(player)
+                        // No cambiamos de jugador aquí, el botón "Terminar Turno" se encargará de eso
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -224,6 +267,29 @@ fun GameView(modifier: Modifier, maxScore: Int = DEFAULT_MAX_SCORE, player1: Str
                 Text(
                     text = stringResource(R.string.roll),
                     style = MaterialTheme.typography.titleLarge
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = {
+                    // Desbloquear todos los dados
+                    for (i in 0 until diceLocked.size) {
+                        diceLocked[i] = false
+                    }
+                    // Resetear el estado de congelación
+                    for (i in 0 until diceFrozen.size) {
+                        diceFrozen[i] = false
+                    }
+                    player = changePlayer(player)
+                    hasRolledOnce = false // Resetear para el nuevo jugador
+                },
+                enabled = diceLocked.any { it } // Habilitado solo si hay al menos un dado bloqueado
+            ) {
+                Text(
+                    text = stringResource(R.string.end_turn),
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
         }
