@@ -2,6 +2,8 @@
     <string name="app_name">Farkle</string>
 
     <string name="roll">Girar</string>
+    <string name="reroll">Volver a tirar</string>
+    <string name="end_turn">Terminar turno</string>
 
     <string name="play">Jugar</string>
     <string name="scores">Puntuaciones</string>
