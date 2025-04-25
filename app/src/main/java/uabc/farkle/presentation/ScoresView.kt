@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import uabc.farkle.utils.*
 import uabc.farkle.R
 import uabc.farkle.data.ScoreRegister
+import uabc.farkle.dialogs.DeleteFileDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

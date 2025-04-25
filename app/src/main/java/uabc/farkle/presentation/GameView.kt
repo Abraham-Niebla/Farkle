@@ -28,6 +28,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +46,7 @@ import kotlinx.coroutines.launch
 import uabc.farkle.utils.*
 import uabc.farkle.R
 import uabc.farkle.data.ScoreRegister
+import uabc.farkle.dialogs.FarkledDialog
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -57,19 +59,21 @@ fun GameView(
     player1: String,
     player2: String
 ) {
-    var dice1 by remember { mutableStateOf(1) }
-    var dice2 by remember { mutableStateOf(2) }
-    var dice3 by remember { mutableStateOf(3) }
-    var dice4 by remember { mutableStateOf(4) }
-    var dice5 by remember { mutableStateOf(5) }
-    var dice6 by remember { mutableStateOf(6) }
+    var dice1 by remember { mutableIntStateOf(1) }
+    var dice2 by remember { mutableIntStateOf(2) }
+    var dice3 by remember { mutableIntStateOf(3) }
+    var dice4 by remember { mutableIntStateOf(4) }
+    var dice5 by remember { mutableIntStateOf(5) }
+    var dice6 by remember { mutableIntStateOf(6) }
 
     var rollEnabled by remember { mutableStateOf(true) }
+    var showDialog by remember { mutableStateOf(false) }
 
     val dateFormatter = SimpleDateFormat("dd-MMMM-yyyy", Locale.getDefault())
     val timeFormatter = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
-    var player by remember { mutableStateOf(0) }
+    var player by remember { mutableIntStateOf(0) }
+    var playerCurrentScore by remember { mutableIntStateOf(0) }
 
     var names = remember { mutableStateListOf(player1, player2) }
     var puntos = remember { mutableStateListOf(0, 0) }
@@ -95,6 +99,21 @@ fun GameView(
         0 -> 1
         1 -> 0
         else -> 0
+    }
+
+    fun endTurn(){
+        // Desbloquear todos los dados
+        for (i in 0 until diceLocked.size) {
+            diceLocked[i] = false
+        }
+        // Resetear el estado de congelación
+        for (i in 0 until diceFrozen.size) {
+            diceFrozen[i] = false
+        }
+
+        puntos[player] += playerCurrentScore
+        player = changePlayer(player)
+        hasRolledOnce = false // Resetear para el nuevo jugador
     }
 
     Scaffold(
@@ -217,7 +236,6 @@ fun GameView(
                     }
                     scope.launch {
                         repeat(6) {
-
                             if (!diceFrozen[0]) dice1 = (1..6).random()
                             if (!diceFrozen[1]) dice2 = (1..6).random()
                             if (!diceFrozen[2]) dice3 = (1..6).random()
@@ -227,15 +245,21 @@ fun GameView(
                             delay(10)
                         }
                         // Sumar solo los valores de los dados que NO estaban bloqueados al tirar
-                        var currentScore = 0
-                        if (!diceFrozen[0]) currentScore += dice1
-                        if (!diceFrozen[1]) currentScore += dice2
-                        if (!diceFrozen[2]) currentScore += dice3
-                        if (!diceFrozen[3]) currentScore += dice4
-                        if (!diceFrozen[4]) currentScore += dice5
-                        if (!diceFrozen[5]) currentScore += dice6
+                        var currentScore = calculateScore(listOf(
+                            if (!diceFrozen[0]) dice1 else 0,
+                            if (!diceFrozen[1]) dice2 else 0,
+                            if (!diceFrozen[2]) dice3 else 0,
+                            if (!diceFrozen[3]) dice4 else 0,
+                            if (!diceFrozen[4]) dice5 else 0,
+                            if (!diceFrozen[5]) dice6 else 0
+                        ))
 
-                        puntos[player] += currentScore
+                        if(currentScore == 0){
+                            showDialog = true
+                            playerCurrentScore = 0
+                        }
+
+                        playerCurrentScore += currentScore
                         tiros[player]++
 
                         if (!hasRolledOnce) {
@@ -262,7 +286,7 @@ fun GameView(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 ),
-                enabled = rollEnabled
+                enabled = !(diceLocked.all { it } || diceFrozen.all { it })
             ) {
                 Text(
                     text = stringResource(R.string.roll),
@@ -274,16 +298,7 @@ fun GameView(
 
             Button(
                 onClick = {
-                    // Desbloquear todos los dados
-                    for (i in 0 until diceLocked.size) {
-                        diceLocked[i] = false
-                    }
-                    // Resetear el estado de congelación
-                    for (i in 0 until diceFrozen.size) {
-                        diceFrozen[i] = false
-                    }
-                    player = changePlayer(player)
-                    hasRolledOnce = false // Resetear para el nuevo jugador
+                    endTurn()
                 },
                 enabled = diceLocked.any { it } // Habilitado solo si hay al menos un dado bloqueado
             ) {
@@ -293,5 +308,13 @@ fun GameView(
                 )
             }
         }
+    }
+    if (showDialog) {
+        FarkledDialog(
+            onDismiss = {
+                endTurn()
+                showDialog = false
+            }
+        )
     }
 }

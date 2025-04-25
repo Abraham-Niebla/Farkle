@@ -24,11 +24,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import uabc.farkle.intents.*
 import uabc.farkle.R
-import uabc.farkle.utils.PlayersNamesDialog
+import uabc.farkle.dialogs.PlayersNamesDialog
 
 @Composable
 fun MainView(modifier: Modifier, context: Context) {

@@ -4,11 +4,13 @@
     <string name="roll">Girar</string>
     <string name="reroll">Volver a tirar</string>
     <string name="end_turn">Terminar turno</string>
+    <string name="farkled">Farkled!</string>
 
     <string name="play">Jugar</string>
     <string name="scores">Puntuaciones</string>
     <string name="max_score">Puntaje objetivo</string>
     <string name="rules">Reglas</string>
+    <string name="farkled_msg">No puede puntuar con ningún dado.\nHa perdido todos sus puntos.</string>
 
     <string name="set">Establecer</string>
     <string name="no_conection">Sin conexión</string>
