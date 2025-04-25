@@ -1,4 +1,4 @@
-package uabc.farkle.utils
+package uabc.farkle.dialogs
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

@@ -1,4 +1,4 @@
-package uabc.farkle.utils
+package uabc.farkle.dialogs
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
