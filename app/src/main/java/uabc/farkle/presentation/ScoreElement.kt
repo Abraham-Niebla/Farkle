@@ -16,8 +16,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import uabc.farkle.R
 import uabc.farkle.data.ScoreRegister
 import uabc.farkle.ui.theme.extendedColors
 
@@ -69,10 +71,10 @@ fun ScoreElement(score: ScoreRegister){
                 Spacer(modifier = Modifier.padding(horizontal = 10.dp))
                 Text(
                     text = when(score.victoria){
-                        true -> "(Victoria)"
+                        true -> stringResource(R.string.victory)
                         false -> when(score.empate){
-                            false -> "(Derrota)"
-                            true -> "(Empate)"
+                            false -> stringResource(R.string.lose)
+                            true -> stringResource(R.string.draw)
                         }
                     },
                     style = victoriaStyle,
@@ -83,7 +85,7 @@ fun ScoreElement(score: ScoreRegister){
             Spacer(modifier = Modifier.padding(5.dp))
 
             Text(
-                text = "Puntaje objetivo: ${score.puntajeObjetivo}",
+                text = stringResource(R.string.max_score_, score.puntajeObjetivo),
                 style = puntajeStyle,
                 modifier = Modifier.padding(3.dp)
             )
@@ -91,7 +93,7 @@ fun ScoreElement(score: ScoreRegister){
             Spacer(modifier = Modifier.padding(1.dp))
 
             Text(
-                text = "Puntos conseguidos: ${score.puntajeLogrado}",
+                text = stringResource(R.string.score_, score.puntajeLogrado),
                 style = puntajeStyle,
                 modifier = Modifier.padding(3.dp)
             )
@@ -99,7 +101,7 @@ fun ScoreElement(score: ScoreRegister){
             Spacer(modifier = Modifier.padding(1.dp))
 
             Text(
-                text = "Tiros realizados: ${score.totalTiros}",
+                text = stringResource(R.string.throws_, score.totalTiros),
                 style = puntajeStyle,
                 modifier = Modifier.padding(3.dp)
             )

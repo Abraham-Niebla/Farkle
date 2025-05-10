@@ -61,7 +61,7 @@ fun ScoresView(modifier: Modifier){
                     }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Regresar"
+                            contentDescription = stringResource(R.string.page_return)
                         )
                     }
                 },
@@ -71,7 +71,7 @@ fun ScoresView(modifier: Modifier){
                     }) {
                         Icon(
                             imageVector = Icons.Filled.Delete, // Puedes cambiar este icono por otro
-                            contentDescription = "Más opciones"
+                            contentDescription = stringResource(R.string.clean)
                         )
                     }
                 }

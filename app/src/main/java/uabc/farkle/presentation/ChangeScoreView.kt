@@ -66,7 +66,7 @@ fun ChangeScoreView(modifier: Modifier, maxScore: Int, maxTiros: Int) {
                     }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Regresar"
+                            contentDescription = stringResource(R.string.page_return)
                         )
                     }
                 }
