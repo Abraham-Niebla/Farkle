@@ -40,8 +40,10 @@ android {
 }
 
 dependencies {
-    implementation ("androidx.compose.ui:ui-text-google-fonts:1.7.8")
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.7.8")
     implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.compose.material3:material3:1.3.2")
+    
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
