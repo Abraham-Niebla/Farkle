@@ -104,6 +104,7 @@ fun GameView(
     }
 
     fun endTurn() {
+        playerCurrentScore += playerCurrentThrowScore
         puntos[player] += playerCurrentScore
 
         if (lastTurn){
@@ -301,6 +302,10 @@ fun GameView(
                 onClick = {
                     rollEnabled = false
                     hotDices = false
+
+                    playerCurrentScore += playerCurrentThrowScore
+                    playerCurrentThrowScore = 0
+
                     // Congelar el estado de los dados bloqueados antes de la tirada
                     for (i in 0 until diceLocked.size) {
                         diceFrozen[i] = diceLocked[i]
@@ -326,14 +331,11 @@ fun GameView(
                         else { // Player not Farkled
                             hotDices = calculateHotDices(rollValues)
                             if(hotDices){
-                                playerCurrentThrowScore = calculateScore(rollValues)
+                                playerCurrentThrowScore = score
 
                                 diceLocked.fill(false)
                                 diceFrozen.fill(false)
                             }
-
-                            playerCurrentScore += playerCurrentThrowScore
-                            playerCurrentThrowScore = 0
 
                             tiros[player]++
                             playerCurrentTiros++
