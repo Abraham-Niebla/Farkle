@@ -6,10 +6,11 @@ data class ScoreRegister(
     val puntajeLogrado:  Int      = 0,
     val totalTiros:      Int      = 0,
     val victoria:        Boolean  = false,
+    val empate:          Boolean = false,
     val fechaJuego:      String   = "Sin fecha",
     val horaJuego:       String   = "Sin hora"
 ){
     override fun toString(): String {
-        return "${nombreJugador}|${puntajeObjetivo}|${puntajeLogrado}|${totalTiros}|${victoria}|${fechaJuego}|${horaJuego}"
+        return "${nombreJugador}|${puntajeObjetivo}|${puntajeLogrado}|${totalTiros}|${victoria}|${empate}|${fechaJuego}|${horaJuego}"
     }
 }

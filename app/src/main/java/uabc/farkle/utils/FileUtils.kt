@@ -37,8 +37,9 @@ fun readFile(context: Context): List<ScoreRegister> {
                 puntajeLogrado  = dataSeparated[2].toString().toInt(), // Int
                 totalTiros      = dataSeparated[3].toString().toInt(), // Int
                 victoria        = dataSeparated[4].toString().toBoolean(), // Boolean
-                fechaJuego      = dataSeparated[5].toString(), // String
-                horaJuego       = dataSeparated[6].toString()  // String
+                empate          = dataSeparated[5].toString().toBoolean(), // Boolean
+                fechaJuego      = dataSeparated[6].toString(), // String
+                horaJuego       = dataSeparated[7].toString()  // String
             ))
         }
     } catch (e: Exception) {

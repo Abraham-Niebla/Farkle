@@ -30,17 +30,23 @@ fun ScoreElement(score: ScoreRegister){
 
     val cardColor = when(score.victoria){
         true  -> MaterialTheme.extendedColors.customColor1Container
-        false -> MaterialTheme.extendedColors.customColor2Container
+        false -> when(score.empate){
+            false -> MaterialTheme.extendedColors.customColor2Container
+            true -> MaterialTheme.extendedColors.customColor3Container
+        }
     }
 
     val cardContainerColor = when(score.victoria){
         true  -> MaterialTheme.extendedColors.onCustomColor1Container
-        false -> MaterialTheme.extendedColors.onCustomColor2Container
+        false -> when(score.empate){
+            false -> MaterialTheme.extendedColors.onCustomColor2Container
+            true -> MaterialTheme.extendedColors.onCustomColor3Container
+        }
     }
+
 
     ElevatedCard(
         modifier = Modifier
-//            .width(160.dp)
             .fillMaxWidth()
             .padding(8.dp),
         shape = RoundedCornerShape(16.dp),
@@ -64,7 +70,10 @@ fun ScoreElement(score: ScoreRegister){
                 Text(
                     text = when(score.victoria){
                         true -> "(Victoria)"
-                        false -> "(Derrota)"
+                        false -> when(score.empate){
+                            false -> "(Derrota)"
+                            true -> "(Empate)"
+                        }
                     },
                     style = victoriaStyle,
                     modifier = Modifier.padding(3.dp)

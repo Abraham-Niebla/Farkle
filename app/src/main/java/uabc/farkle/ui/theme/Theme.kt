@@ -25,7 +25,12 @@ data class ExtendedColorScheme(
     val customColor2: Color,
     val customColor2Container: Color,
     val onCustomColor2: Color,
-    val onCustomColor2Container: Color
+    val onCustomColor2Container: Color,
+
+    val customColor3: Color,
+    val customColor3Container: Color,
+    val onCustomColor3: Color,
+    val onCustomColor3Container: Color
 )
 
 val extendedLight = ExtendedColorScheme(
@@ -37,7 +42,12 @@ val extendedLight = ExtendedColorScheme(
     customColor2 = customColor2Light,
     customColor2Container = customColor2ContainerLight,
     onCustomColor2 = onCustomColor2Light,
-    onCustomColor2Container = onCustomColor2ContainerLight
+    onCustomColor2Container = onCustomColor2ContainerLight,
+
+    customColor3 = customColor3Light,
+    customColor3Container = customColor3ContainerLight,
+    onCustomColor3 = onCustomColor3Light,
+    onCustomColor3Container = onCustomColor3ContainerLight
 )
 
 val extendedDark = ExtendedColorScheme(
@@ -49,7 +59,12 @@ val extendedDark = ExtendedColorScheme(
     customColor2 = customColor2Dark,
     customColor2Container = customColor2ContainerDark,
     onCustomColor2 = onCustomColor2Dark,
-    onCustomColor2Container = onCustomColor2ContainerDark
+    onCustomColor2Container = onCustomColor2ContainerDark,
+
+    customColor3 = customColor3Dark,
+    customColor3Container = customColor3ContainerDark,
+    onCustomColor3 = onCustomColor3Dark,
+    onCustomColor3Container = onCustomColor3ContainerDark
 )
 
 // CompositionLocal para los colores extendidos
