@@ -7,6 +7,7 @@
     <string name="farkled">Farkled!</string>
     <string name="end_game">%s ha ganado!</string>
     <string name="end_dialog">El jugador "%s" ha ganado la partida</string>
+    <string name="draw_dialog">Ambos jugadores han quedado empatados</string>
     <string name="winner">Ganador</string>
 
     <string name="objetivo">Objetivo: %d</string>
@@ -38,9 +39,9 @@
     <string name="player_1">Jugador 1</string>
     <string name="player_2">Jugador 2</string>
 
-    <string name="victory">(Victoria)</string>
-    <string name="lose">(Derrota)</string>
-    <string name="draw">(Empate)</string>
+    <string name="victory">Victoria</string>
+    <string name="lose">Derrota</string>
+    <string name="draw">Empate</string>
 
     <string name="page_return">Regresar</string>
     <string name="clean">Limpiar</string>

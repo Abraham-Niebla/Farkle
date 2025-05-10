@@ -46,6 +46,7 @@ import kotlinx.coroutines.launch
 import uabc.farkle.utils.*
 import uabc.farkle.R
 import uabc.farkle.data.ScoreRegister
+import uabc.farkle.dialogs.DrawDialog
 import uabc.farkle.dialogs.FarkledDialog
 import uabc.farkle.dialogs.WinnerDialog
 import java.text.SimpleDateFormat
@@ -71,6 +72,7 @@ fun GameView(
     var rollEnabled by remember { mutableStateOf(true) }
     var showFarkledDialog by remember { mutableStateOf(false) }
     var showWinnerDialog by remember { mutableStateOf(false) }
+    var showDrawDialog by remember { mutableStateOf(false) }
 
     val dateFormatter = SimpleDateFormat("dd-MMMM-yyyy", Locale.getDefault())
     val timeFormatter = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
@@ -111,10 +113,10 @@ fun GameView(
 
     fun playerWin(){
         winner = when(puntos[0] > puntos[1]){
-            true -> 0
+            true -> 0 // Gana jugador 0
             else -> when(puntos[0] < puntos[1]){
-                true -> 1
-                else -> -1
+                true -> 1 // Gana jugador 1
+                else -> -1 // Empate
             }
         }
 
@@ -148,7 +150,12 @@ fun GameView(
             )
         )
 
-        showWinnerDialog = true
+        if (winner == -1){
+            showDrawDialog = true
+        }
+        else{
+            showWinnerDialog = true
+        }
     }
 
     fun endTurn() {
@@ -399,6 +406,15 @@ fun GameView(
                 showWinnerDialog = false
             },
             winner = names[winner]
+        )
+    }
+    if (showDrawDialog) {
+        DrawDialog(
+            onDismiss = {
+                val activity = context as? Activity
+                activity?.finish()
+                showDrawDialog = false
+            }
         )
     }
 }
