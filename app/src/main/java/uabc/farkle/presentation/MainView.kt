@@ -28,17 +28,23 @@ import androidx.compose.ui.unit.dp
 import uabc.farkle.intents.*
 import uabc.farkle.R
 import uabc.farkle.dialogs.PlayersNamesDialog
+import uabc.farkle.utils.DEFAULT_MAX_SCORE
+import uabc.farkle.utils.DEFAULT_THROWS
 
 @Composable
 fun MainView(modifier: Modifier, context: Context) {
-    var puntaje by remember { mutableStateOf(10000) }
+    var puntaje by remember { mutableStateOf(DEFAULT_MAX_SCORE) }
+    var tiros by remember { mutableStateOf(DEFAULT_THROWS) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val puntajeRecibido = result.data?.getIntExtra("puntaje", 0)
+            val tirosRecibido = result.data?.getIntExtra("tiros", 0)
+
             puntaje = puntajeRecibido ?: 0
+            tiros = tirosRecibido ?: 0
         }
     }
 
@@ -90,10 +96,11 @@ fun MainView(modifier: Modifier, context: Context) {
             onClick = {
                 val intent = Intent(context, ChangeScoreActivity::class.java)
                 intent.putExtra("maxScore", puntaje)
+                intent.putExtra("maxTiros", tiros)
                 launcher.launch(intent)
             }) {
             Text(
-                text = stringResource(R.string.max_score),
+                text = stringResource(R.string.config),
                 style = buttonStyle
             )
         }
@@ -106,7 +113,6 @@ fun MainView(modifier: Modifier, context: Context) {
             colors = buttonColors,
             onClick = {
                 val intent = Intent(context, ScoresActivity::class.java)
-                intent.putExtra("maxScore", 10000)
                 context.startActivity(intent)
             }) {
             Text(
@@ -123,7 +129,6 @@ fun MainView(modifier: Modifier, context: Context) {
             colors = buttonColors,
             onClick = {
                 val intent = Intent(context, RulesActivity::class.java)
-                intent.putExtra("maxScore", 10000)
                 context.startActivity(intent)
             }) {
             Text(
@@ -141,6 +146,7 @@ fun MainView(modifier: Modifier, context: Context) {
 
                 val intent = Intent(context, GameActivity::class.java)
                 intent.putExtra("maxScore", puntaje)
+                intent.putExtra("maxTiros", tiros)
                 intent.putExtra("player1", player1)
                 intent.putExtra("player2", player2)
                 context.startActivity(intent)

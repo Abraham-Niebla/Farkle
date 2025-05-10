@@ -47,6 +47,7 @@ import uabc.farkle.utils.*
 import uabc.farkle.R
 import uabc.farkle.data.ScoreRegister
 import uabc.farkle.dialogs.FarkledDialog
+import uabc.farkle.dialogs.WinnerDialog
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -56,6 +57,7 @@ import java.util.Locale
 fun GameView(
     modifier: Modifier,
     maxScore: Int = DEFAULT_MAX_SCORE,
+    maxTiros: Int = DEFAULT_THROWS,
     player1: String,
     player2: String
 ) {
@@ -67,13 +69,19 @@ fun GameView(
     var dice6 by remember { mutableIntStateOf(6) }
 
     var rollEnabled by remember { mutableStateOf(true) }
-    var showDialog by remember { mutableStateOf(false) }
+    var showFarkledDialog by remember { mutableStateOf(false) }
+    var showWinnerDialog by remember { mutableStateOf(false) }
 
     val dateFormatter = SimpleDateFormat("dd-MMMM-yyyy", Locale.getDefault())
     val timeFormatter = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
     var player by remember { mutableIntStateOf(0) }
     var playerCurrentScore by remember { mutableIntStateOf(0) }
+    var playerCurrentTiros by remember { mutableIntStateOf(0) }
+    var tirosRestantes by remember { mutableIntStateOf(maxTiros) }
+    var lastTurn by remember { mutableStateOf(false) }
+
+    var winner by remember { mutableIntStateOf(-1) } //Definir en funcion localmente
 
     var names = remember { mutableStateListOf(player1, player2) }
     var puntos = remember { mutableStateListOf(0, 0) }
@@ -101,7 +109,58 @@ fun GameView(
         else -> 0
     }
 
-    fun endTurn(){
+    fun playerWin(){
+        winner = when(puntos[0] > puntos[1]){
+            true -> 0
+            else -> when(puntos[0] < puntos[1]){
+                true -> 1
+                else -> -1
+            }
+        }
+
+        var playerSave = 0
+        saveFile(
+            context = context,
+            data = ScoreRegister(
+                nombreJugador = names[playerSave],
+                puntajeObjetivo = maxScore,
+                puntajeLogrado = puntos[playerSave],
+                totalTiros = tiros[playerSave],
+                victoria = playerSave == winner,
+                empate = winner == -1,
+                fechaJuego = dateFormatter.format(Date()),
+                horaJuego = timeFormatter.format(Date())
+            )
+        )
+
+        playerSave = 1
+        saveFile(
+            context = context,
+            data = ScoreRegister(
+                nombreJugador = names[playerSave],
+                puntajeObjetivo = maxScore,
+                puntajeLogrado = puntos[playerSave],
+                totalTiros = tiros[playerSave],
+                victoria = playerSave == winner,
+                empate = winner == -1,
+                fechaJuego = dateFormatter.format(Date()),
+                horaJuego = timeFormatter.format(Date())
+            )
+        )
+
+        showWinnerDialog = true
+    }
+
+    fun endTurn() {
+        puntos[player] += playerCurrentScore
+
+        if (lastTurn){
+            playerWin()
+        }
+        else if (puntos[player] >= maxScore){
+            lastTurn = true
+        }
+
         // Desbloquear todos los dados
         for (i in 0 until diceLocked.size) {
             diceLocked[i] = false
@@ -111,9 +170,12 @@ fun GameView(
             diceFrozen[i] = false
         }
 
-        puntos[player] += playerCurrentScore
-        player = changePlayer(player)
+        playerCurrentScore = 0
+        playerCurrentTiros = 0
+        tirosRestantes = maxTiros
+
         hasRolledOnce = false // Resetear para el nuevo jugador
+        player = changePlayer(player)
     }
 
     Scaffold(
@@ -153,7 +215,27 @@ fun GameView(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Max Score: $maxScore",
+                text = stringResource(R.string.objetivo, maxScore),
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleSmall
+            )
+            Text(
+                text = stringResource(R.string.remaining_throws, tirosRestantes),
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleSmall
+            )
+            Text(
+                text = stringResource(R.string.actual_player, names[player]),
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleSmall
+            )
+            Text(
+                text = stringResource(R.string.actual_player_score, playerCurrentScore),
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleSmall
+            )
+            Text(
+                text = stringResource(R.string.player_score, puntos[player]),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleSmall
             )
@@ -245,39 +327,31 @@ fun GameView(
                             delay(10)
                         }
                         // Sumar solo los valores de los dados que NO estaban bloqueados al tirar
-                        var currentScore = calculateScore(listOf(
-                            if (!diceFrozen[0]) dice1 else 0,
-                            if (!diceFrozen[1]) dice2 else 0,
-                            if (!diceFrozen[2]) dice3 else 0,
-                            if (!diceFrozen[3]) dice4 else 0,
-                            if (!diceFrozen[4]) dice5 else 0,
-                            if (!diceFrozen[5]) dice6 else 0
-                        ))
+                        var currentScore = calculateScore(
+                            listOf(
+                                if (!diceFrozen[0]) dice1 else 0,
+                                if (!diceFrozen[1]) dice2 else 0,
+                                if (!diceFrozen[2]) dice3 else 0,
+                                if (!diceFrozen[3]) dice4 else 0,
+                                if (!diceFrozen[4]) dice5 else 0,
+                                if (!diceFrozen[5]) dice6 else 0
+                            )
+                        )
 
-                        if(currentScore == 0){
-                            showDialog = true
+                        if (currentScore == 0) {
+                            showFarkledDialog = true
                             playerCurrentScore = 0
                         }
 
                         playerCurrentScore += currentScore
                         tiros[player]++
+                        playerCurrentTiros++
+                        tirosRestantes--
 
                         if (!hasRolledOnce) {
                             hasRolledOnce = true
                         }
 
-                        saveFile(
-                            context = context,
-                            data = ScoreRegister(
-                                nombreJugador = names[player],
-                                puntajeObjetivo = maxScore,
-                                puntajeLogrado = puntos[player],
-                                totalTiros = tiros[player],
-                                victoria = puntos[player] % 2 == 0,
-                                fechaJuego = dateFormatter.format(Date()),
-                                horaJuego = timeFormatter.format(Date())
-                            )
-                        )
                         rollEnabled = true
                         // No cambiamos de jugador aquí, el botón "Terminar Turno" se encargará de eso
                     }
@@ -286,7 +360,7 @@ fun GameView(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 ),
-                enabled = !(diceLocked.all { it } || diceFrozen.all { it })
+                enabled = (!(diceLocked.all { it } || diceFrozen.all { it })) && (tirosRestantes > 0)
             ) {
                 Text(
                     text = stringResource(R.string.roll),
@@ -309,12 +383,22 @@ fun GameView(
             }
         }
     }
-    if (showDialog) {
+    if (showFarkledDialog) {
         FarkledDialog(
             onDismiss = {
                 endTurn()
-                showDialog = false
+                showFarkledDialog = false
             }
+        )
+    }
+    if (showWinnerDialog) {
+        WinnerDialog(
+            onDismiss = {
+                val activity = context as? Activity
+                activity?.finish()
+                showWinnerDialog = false
+            },
+            winner = names[winner]
         )
     }
 }

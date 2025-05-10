@@ -17,6 +17,7 @@ class GameActivity : ComponentActivity() {
 
         val intent = intent
         val maxScore = intent.getIntExtra("maxScore", 0)
+        val maxTiros = intent.getIntExtra("maxTiros", 0)
         val player1 = intent.getStringExtra("player1").takeIf { !it.isNullOrBlank() } ?: "Jugador 1"
         val player2 = intent.getStringExtra("player2").takeIf { !it.isNullOrBlank() } ?: "Jugador 2"
 
@@ -27,6 +28,7 @@ class GameActivity : ComponentActivity() {
                     GameView(
                         modifier = Modifier.padding(innerPadding).fillMaxSize(),
                         maxScore = maxScore,
+                        maxTiros = maxTiros,
                         player1 = player1,
                         player2 = player2
                     )

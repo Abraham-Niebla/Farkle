@@ -17,6 +17,7 @@ class ChangeScoreActivity : ComponentActivity() {
 
         val intent = intent
         val maxScore = intent.getIntExtra("maxScore", 0)
+        val maxTiros = intent.getIntExtra("maxTiros", 0)
 
         enableEdgeToEdge()
         setContent {
@@ -26,7 +27,8 @@ class ChangeScoreActivity : ComponentActivity() {
                         modifier = Modifier
                             .padding(innerPadding)
                             .fillMaxSize(),
-                        maxScore = maxScore
+                        maxScore = maxScore,
+                        maxTiros = maxTiros
                     )
                 }
             }

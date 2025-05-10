@@ -35,13 +35,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import uabc.farkle.R
-import uabc.farkle.intents.ChangeScoreActivity
+import uabc.farkle.utils.DEFAULT_MAX_SCORE
+import uabc.farkle.utils.DEFAULT_THROWS
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChangeScoreView(modifier: Modifier, maxScore: Int) {
+fun ChangeScoreView(modifier: Modifier, maxScore: Int, maxTiros: Int) {
     val context = LocalContext.current
     var puntaje by remember { mutableStateOf("${maxScore}") }
+    var tiros by remember { mutableStateOf("${maxTiros}") }
 
     Scaffold(
         topBar = {
@@ -93,6 +95,21 @@ fun ChangeScoreView(modifier: Modifier, maxScore: Int) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            TextField(
+                value = tiros,
+                onValueChange = { newValue ->
+                    if (newValue.all { it.isDigit() }) {
+                        tiros = newValue
+                    }
+                },
+                label = { Text(stringResource(R.string.max_throw)) },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Number
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             Button(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -102,10 +119,17 @@ fun ChangeScoreView(modifier: Modifier, maxScore: Int) {
                 ),
                 onClick = {
                     var puntajeInt = puntaje.toIntOrNull() ?: 0
-                    puntajeInt = if (puntajeInt <= 0) 10000 else puntajeInt
+                    puntajeInt = if (puntajeInt <= 0) DEFAULT_MAX_SCORE else puntajeInt
+
+                    var tirosInt = tiros.toIntOrNull() ?: 0
+                    tirosInt = if (tirosInt <= 0) DEFAULT_THROWS else tirosInt
+                    tirosInt = if (tirosInt > DEFAULT_THROWS) DEFAULT_THROWS else tirosInt
+
+
                     val activity = context as? Activity
                     val intent = Intent().apply {
                         putExtra("puntaje", puntajeInt)
+                        putExtra("tiros", tirosInt)
                     }
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
