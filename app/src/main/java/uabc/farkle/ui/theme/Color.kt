@@ -89,6 +89,7 @@ val customColor3Light = Color(0xFF6D5E0F)
 val onCustomColor3Light = Color(0xFFFFFFFF)
 val customColor3ContainerLight = Color(0xFFF8E287)
 val onCustomColor3ContainerLight = Color(0xFF534600)
+val hotDicesColorLight = Color(0xFFBB0600)
 
 
 
@@ -104,3 +105,4 @@ val customColor3Dark = Color(0xFFDBC66E)
 val onCustomColor3Dark = Color(0xFF393000)
 val customColor3ContainerDark = Color(0xFF534600)
 val onCustomColor3ContainerDark = Color(0xFFF8E287)
+val hotDicesColorDark = Color(0xFFE90A00)

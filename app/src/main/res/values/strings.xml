@@ -9,6 +9,7 @@
     <string name="end_dialog">El jugador "%s" ha ganado la partida</string>
     <string name="draw_dialog">Ambos jugadores han quedado empatados</string>
     <string name="winner">Ganador</string>
+    <string name="hot_dices">Hot Dices</string>
 
     <string name="objetivo">Objetivo: %d</string>
     <string name="remaining_throws">Tiros restantes: %d</string>

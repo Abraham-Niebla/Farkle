@@ -22,11 +22,10 @@ import uabc.farkle.data.ScoreRegister
 import uabc.farkle.dialogs.DrawDialog
 import uabc.farkle.dialogs.FarkledDialog
 import uabc.farkle.dialogs.WinnerDialog
+import uabc.farkle.ui.theme.extendedColors
 import uabc.farkle.utils.*
 import java.text.SimpleDateFormat
 import java.util.*
-
-import android.util.Log
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +50,7 @@ fun GameView(
     var playerCurrentTiros by remember { mutableIntStateOf(0) }
     var tirosRestantes by remember { mutableIntStateOf(maxTiros) }
     var lastTurn by remember { mutableStateOf(false) }
+    var hotDices by remember { mutableStateOf(false) }
 
     var winner by remember { mutableIntStateOf(-1) }
 
@@ -121,6 +121,7 @@ fun GameView(
         playerCurrentTiros = 0
         tirosRestantes = maxTiros
         hasRolledOnce = false
+        hotDices = false
 
         player = changePlayer(player)
     }
@@ -188,7 +189,24 @@ fun GameView(
 
             Spacer(modifier = Modifier.height(50.dp))
 
-            Card {
+            Text(
+                text = stringResource(R.string.hot_dices),
+                color = MaterialTheme.extendedColors.hotDicesColor,
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier
+                    .graphicsLayer(alpha = if (hotDices) 1f else 0f)
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = when(hotDices){
+                        true -> MaterialTheme.extendedColors.hotDicesColor
+                        false -> MaterialTheme.colorScheme.secondaryContainer
+                    },
+                ),
+            ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
@@ -207,20 +225,20 @@ fun GameView(
                                     .aspectRatio(1f)
                                     .padding(1.dp)
                                     .clickable(enabled = hasRolledOnce && !diceFrozen[index]) {
-                                        diceLocked[index] = !diceLocked[index]
+                                        if(!hotDices){
+                                            diceLocked[index] = !diceLocked[index]
 
-                                        val selectedDice = listOf(
-                                            if (diceLocked[0] && !diceFrozen[0]) rollValues[0] else 0,
-                                            if (diceLocked[1] && !diceFrozen[1]) rollValues[1] else 0,
-                                            if (diceLocked[2] && !diceFrozen[2]) rollValues[2] else 0,
-                                            if (diceLocked[3] && !diceFrozen[3]) rollValues[3] else 0,
-                                            if (diceLocked[4] && !diceFrozen[4]) rollValues[4] else 0,
-                                            if (diceLocked[5] && !diceFrozen[5]) rollValues[5] else 0
-                                        )
-                                        val scoreFromLocked = calculateScore(selectedDice)
-                                        playerCurrentThrowScore = scoreFromLocked
-
-
+                                            val selectedDice = listOf(
+                                                if (diceLocked[0] && !diceFrozen[0]) rollValues[0] else 0,
+                                                if (diceLocked[1] && !diceFrozen[1]) rollValues[1] else 0,
+                                                if (diceLocked[2] && !diceFrozen[2]) rollValues[2] else 0,
+                                                if (diceLocked[3] && !diceFrozen[3]) rollValues[3] else 0,
+                                                if (diceLocked[4] && !diceFrozen[4]) rollValues[4] else 0,
+                                                if (diceLocked[5] && !diceFrozen[5]) rollValues[5] else 0
+                                            )
+                                            val scoreFromLocked = calculateScore(selectedDice)
+                                            playerCurrentThrowScore = scoreFromLocked
+                                        }
                                     },
                                 contentAlignment = Alignment.Center
                             ) {
@@ -247,19 +265,20 @@ fun GameView(
                                     .aspectRatio(1f)
                                     .padding(1.dp)
                                     .clickable(enabled = hasRolledOnce && !diceFrozen[index]) {
-                                        diceLocked[index] = !diceLocked[index]
+                                        if (!hotDices) {
+                                            diceLocked[index] = !diceLocked[index]
 
-                                        val selectedDice = listOf(
-                                            if (diceLocked[0] && !diceFrozen[0]) rollValues[0] else 0,
-                                            if (diceLocked[1] && !diceFrozen[1]) rollValues[1] else 0,
-                                            if (diceLocked[2] && !diceFrozen[2]) rollValues[2] else 0,
-                                            if (diceLocked[3] && !diceFrozen[3]) rollValues[3] else 0,
-                                            if (diceLocked[4] && !diceFrozen[4]) rollValues[4] else 0,
-                                            if (diceLocked[5] && !diceFrozen[5]) rollValues[5] else 0
-                                        )
-                                        val scoreFromLocked = calculateScore(selectedDice)
-                                        playerCurrentThrowScore = scoreFromLocked
-
+                                            val selectedDice = listOf(
+                                                if (diceLocked[0] && !diceFrozen[0]) rollValues[0] else 0,
+                                                if (diceLocked[1] && !diceFrozen[1]) rollValues[1] else 0,
+                                                if (diceLocked[2] && !diceFrozen[2]) rollValues[2] else 0,
+                                                if (diceLocked[3] && !diceFrozen[3]) rollValues[3] else 0,
+                                                if (diceLocked[4] && !diceFrozen[4]) rollValues[4] else 0,
+                                                if (diceLocked[5] && !diceFrozen[5]) rollValues[5] else 0
+                                            )
+                                            val scoreFromLocked = calculateScore(selectedDice)
+                                            playerCurrentThrowScore = scoreFromLocked
+                                        }
                                     },
                                 contentAlignment = Alignment.Center
                             ) {
@@ -281,6 +300,7 @@ fun GameView(
             Button(
                 onClick = {
                     rollEnabled = false
+                    hotDices = false
                     // Congelar el estado de los dados bloqueados antes de la tirada
                     for (i in 0 until diceLocked.size) {
                         diceFrozen[i] = diceLocked[i]
@@ -298,12 +318,20 @@ fun GameView(
                         val frozenRoll = rollValues.mapIndexed { index, value -> if (!diceFrozen[index]) value else 0 }
                         val score = calculateScore(frozenRoll)
 
-                        if (score == 0) {
+                        if (score == 0) { // Player Farkled
                             showFarkledDialog = true
                             playerCurrentScore = 0
                             playerCurrentThrowScore = 0
                         }
-                        else {
+                        else { // Player not Farkled
+                            hotDices = calculateHotDices(rollValues)
+                            if(hotDices){
+                                playerCurrentThrowScore = calculateScore(rollValues)
+
+                                diceLocked.fill(false)
+                                diceFrozen.fill(false)
+                            }
+
                             playerCurrentScore += playerCurrentThrowScore
                             playerCurrentThrowScore = 0
 
@@ -320,7 +348,7 @@ fun GameView(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 ),
-                enabled = (!(diceLocked.all { it } || diceFrozen.all { it })) && (tirosRestantes > 0)
+                enabled = ((!(diceLocked.all { it } || diceFrozen.all { it })) && (tirosRestantes > 0)) || hotDices
             ) {
                 Text(
                     text = stringResource(R.string.roll),
@@ -332,7 +360,7 @@ fun GameView(
 
             Button(
                 onClick = { endTurn() },
-                enabled = diceLocked.any { it } || diceFrozen.any { it }
+                enabled = (diceLocked.any { it } || diceFrozen.any { it }) || hotDices
             ) {
                 Text(
                     text = stringResource(R.string.end_turn),
