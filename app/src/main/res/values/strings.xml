@@ -5,13 +5,24 @@
     <string name="reroll">Volver a tirar</string>
     <string name="end_turn">Terminar turno</string>
     <string name="farkled">Farkled!</string>
+    <string name="end_game">%s ha ganado!</string>
+    <string name="end_dialog">El jugador "%s" ha ganado la partida</string>
+    <string name="winner">Ganador</string>
+
+    <string name="objetivo">Objetivo: %d</string>
+    <string name="remaining_throws">Tiros restantes: %d</string>
+    <string name="actual_player">Jugador en turno: %s</string>
+    <string name="player_score">Puntos del jugador: %d</string>
+    <string name="actual_player_score">Puntos en turno: %d</string>
 
     <string name="play">Jugar</string>
     <string name="scores">Puntuaciones</string>
-    <string name="max_score">Puntaje objetivo</string>
+    <string name="config">Configurar</string>
     <string name="rules">Reglas</string>
     <string name="farkled_msg">No puede puntuar con ningún dado.\nHa perdido todos sus puntos.</string>
 
+    <string name="max_score">Puntaje objetivo</string>
+    <string name="max_throw">Límite de lanzamientos</string>
     <string name="set">Establecer</string>
     <string name="no_conection">Sin conexión</string>
     <string name="need_conection">Para ver la página es necesario que se conecte a internet</string>
