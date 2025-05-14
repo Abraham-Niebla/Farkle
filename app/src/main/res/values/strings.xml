@@ -12,10 +12,10 @@
     <string name="hot_dices">Hot Dices</string>
 
     <string name="objetivo">Objetivo: %d</string>
-    <string name="remaining_throws">Tiros restantes: %d</string>
+    <string name="remaining_throws">Tiros restantes</string>
     <string name="actual_player">Jugador en turno: %s</string>
     <string name="player_score">Puntos del jugador: %d</string>
-    <string name="actual_player_score">Puntos en turno: %d</string>
+    <string name="actual_player_score">Puntos en turno</string>
 
     <string name="play">Jugar</string>
     <string name="scores">Puntuaciones</string>
@@ -49,6 +49,7 @@
     <string name="search">Buscar</string>
 
     <string name="max_score_">Puntaje objetivo: %d</string>
+    <string name="score">Puntos conseguidos:</string>
     <string name="score_">Puntos conseguidos: %d</string>
     <string name="throws_">Tiros realizados: %d</string>
 </resources>

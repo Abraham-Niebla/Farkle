@@ -162,33 +162,32 @@ fun GameView(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = stringResource(R.string.objetivo, maxScore),
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.titleSmall
-            )
-            Text(
-                text = stringResource(R.string.remaining_throws, tirosRestantes),
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.titleSmall
-            )
-            Text(
-                text = stringResource(R.string.actual_player, names[player]),
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.titleSmall
-            )
-            Text(
-                text = stringResource(R.string.actual_player_score, (playerCurrentScore + playerCurrentThrowScore)),
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.titleSmall
-            )
-            Text(
-                text = stringResource(R.string.player_score, puntos[player]),
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.titleSmall
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                PlayerElement(
+                    nombre = names[0],
+                    puntos = puntos[0],
+                    enTurno = player == 0
+                )
+
+                PlayerElement(
+                    nombre = names[1],
+                    puntos = puntos[1],
+                    enTurno = player == 1
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            InfoElement(
+                objetivo = maxScore,
+                tirosRestantes = tirosRestantes,
+                puntosTurno = (playerCurrentScore + playerCurrentThrowScore)
             )
 
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Text(
                 text = stringResource(R.string.hot_dices),
@@ -350,7 +349,7 @@ fun GameView(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 ),
-                enabled = ((!(diceLocked.all { it } || diceFrozen.all { it })) && (tirosRestantes > 0)) || hotDices
+                enabled = ((!(diceLocked.all { it } || diceFrozen.all { it })) && (tirosRestantes > 0))
             ) {
                 Text(
                     text = stringResource(R.string.roll),

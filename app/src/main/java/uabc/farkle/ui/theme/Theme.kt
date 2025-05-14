@@ -32,6 +32,11 @@ data class ExtendedColorScheme(
     val onCustomColor3: Color,
     val onCustomColor3Container: Color,
 
+    val customColor4: Color,
+    val customColor4Container: Color,
+    val onCustomColor4: Color,
+    val onCustomColor4Container: Color,
+
     val hotDicesColor: Color,
 )
 
@@ -51,6 +56,11 @@ val extendedLight = ExtendedColorScheme(
     onCustomColor3 = onCustomColor3Light,
     onCustomColor3Container = onCustomColor3ContainerLight,
 
+    customColor4 = customColor4Light,
+    customColor4Container = customColor4ContainerLight,
+    onCustomColor4 = onCustomColor4Light,
+    onCustomColor4Container = onCustomColor4ContainerLight,
+
     hotDicesColor = hotDicesColorLight
 )
 
@@ -69,6 +79,11 @@ val extendedDark = ExtendedColorScheme(
     customColor3Container = customColor3ContainerDark,
     onCustomColor3 = onCustomColor3Dark,
     onCustomColor3Container = onCustomColor3ContainerDark,
+
+    customColor4 = customColor4Dark,
+    customColor4Container = customColor4ContainerDark,
+    onCustomColor4 = onCustomColor4Dark,
+    onCustomColor4Container = onCustomColor4ContainerDark,
 
     hotDicesColor = hotDicesColorDark
 )
