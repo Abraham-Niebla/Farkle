@@ -45,11 +45,21 @@
     <string name="draw">Empate</string>
 
     <string name="page_return">Regresar</string>
-    <string name="clean">Limpiar</string>
+    <string name="clean">Limpiar puntuaciones</string>
+    <string name="name_clean">Limpiar nombre</string>
+    <string name="date_clean">Limpiar fecha</string>
     <string name="search">Buscar</string>
+    <string name="name_search">Buscar nombre</string>
 
     <string name="max_score_">Puntaje objetivo: %d</string>
     <string name="score">Puntos conseguidos:</string>
     <string name="score_">Puntos conseguidos: %d</string>
     <string name="throws_">Tiros realizados: %d</string>
+
+    <string name="name_sort">Ordenar por nombre</string>
+    <string name="date_sort">Ordenar por fecha</string>
+
+    <string name="select_date">Selecciona una fecha</string>
+
+
 </resources>

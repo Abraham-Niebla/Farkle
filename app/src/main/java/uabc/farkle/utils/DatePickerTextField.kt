@@ -1,4 +1,4 @@
-package uabc.farkle.dialogs
+package uabc.farkle.utils
 
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -88,6 +88,6 @@ fun DatePickerTextField(
                 }
             }
         },
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
     )
 }
