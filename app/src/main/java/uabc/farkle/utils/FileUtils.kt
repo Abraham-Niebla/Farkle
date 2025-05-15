@@ -32,7 +32,7 @@ fun readFile(context: Context): List<ScoreRegister> {
         dataList.forEach{dataString ->
             val dataSeparated = dataString.split('|')
             scoresList.add(ScoreRegister(
-                nombreJugador   = dataSeparated[0].toString(), // String
+                nombreJugador   = dataSeparated[0].toString().trim(), // String (Nombre sin espacios)
                 puntajeObjetivo = dataSeparated[1].toString().toInt(), // Int
                 puntajeLogrado  = dataSeparated[2].toString().toInt(), // Int
                 totalTiros      = dataSeparated[3].toString().toInt(), // Int

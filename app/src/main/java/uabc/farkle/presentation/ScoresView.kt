@@ -1,7 +1,6 @@
 package uabc.farkle.presentation
 
 import android.app.Activity
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -51,6 +50,9 @@ import uabc.farkle.R
 import uabc.farkle.data.ScoreRegister
 import uabc.farkle.utils.DatePickerTextField
 import uabc.farkle.dialogs.DeleteFileDialog
+import java.text.Collator
+import java.text.SimpleDateFormat
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,14 +72,33 @@ fun ScoresView(modifier: Modifier) {
     var isAscendingName by remember { mutableStateOf(true) }
     var isAscendingDate by remember { mutableStateOf(true) }
 
-    val sortedScores by remember(scoresList, isAscendingName, isAscendingDate) {
-        derivedStateOf<List<ScoreRegister>> {
-            scoresList.sortedWith(
-                compareBy<ScoreRegister> { if (isAscendingDate) it.fechaJuego else -it.fechaJuego.hashCode() }
-                    .thenBy { if (isAscendingName) it.nombreJugador else it.nombreJugador.reversed() }
-            )
+    val formatter = SimpleDateFormat("dd-MMMM-yyyy", Locale("es", "MX"))
+    var sortByNameLastUsed by remember { mutableStateOf(false) }
+
+    val sortedScores by remember(scoresList, isAscendingName, isAscendingDate, sortByNameLastUsed) {
+        derivedStateOf {
+            val collator = Collator.getInstance(Locale("es", "MX")).apply {
+                strength = Collator.PRIMARY // Ignora acentos y mayúsculas/minúsculas
+            }
+
+            scoresList.sortedWith { a, b ->
+                if (sortByNameLastUsed) {
+                    if (isAscendingName)
+                        collator.compare(a.nombreJugador, b.nombreJugador)
+                    else
+                        collator.compare(b.nombreJugador, a.nombreJugador)
+                } else {
+                    val dateA = try { formatter.parse(a.fechaJuego) } catch (e: Exception) { null }
+                    val dateB = try { formatter.parse(b.fechaJuego) } catch (e: Exception) { null }
+                    if (isAscendingDate)
+                        (dateA ?: Date(0)).compareTo(dateB ?: Date(0))
+                    else
+                        (dateB ?: Date(0)).compareTo(dateA ?: Date(0))
+                }
+            }
         }
     }
+
 
     Scaffold(
         topBar = {
@@ -159,6 +180,7 @@ fun ScoresView(modifier: Modifier) {
                     colors = buttonColors,
                     onClick = {
                         isAscendingName = !isAscendingName
+                        sortByNameLastUsed = true
                     }
                 ) {
                     Icon(
@@ -192,6 +214,7 @@ fun ScoresView(modifier: Modifier) {
                     colors = buttonColors,
                     onClick = {
                         isAscendingDate = !isAscendingDate
+                        sortByNameLastUsed = false
                     }
                 ) {
                     Icon(
